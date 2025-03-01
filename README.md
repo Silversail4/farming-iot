@@ -89,7 +89,7 @@ sudo python3 serial_pi.py
 ## Step 4: Testing on LoRa Device
 Download the ```lora_iot_proj.ino``` file and burn it on the Arduino Uno
 
-I connected the Serial cable to my computer. Not sure if it works otherwise
+**Note:** Need to connect the Micro-USB cable for LoRa to work 
 
 ------------------------------------------------
 # Common Troubleshooting:
