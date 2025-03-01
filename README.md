@@ -28,7 +28,27 @@ ls /dev/serial*
 You should see something like ```/dev/serial0 -> ttyAMA0```
 
 ---------------------------------------------
-## Step 2: Testing Serial Connection on Raspberry Pi
+## Step 2: Connecting the wirings from Raspberry Pi to LoRa Device
+From my code, this is my configurations
+Raspberry Pi -> Arduino Uno
+```
+GP14 (TXD) -> d2
+GP15 (RXD) -> d3
+GND -> GND
+```
+In reference to the picture:
+
+GP14 -> d2 will be the purple cable
+
+GP15 -> d3 will be the green cable next to the purple cable
+
+GND -> GND will be the farthest and longest green cable
+
+**Picture Reference:**
+![image](https://github.com/user-attachments/assets/a284df25-5d9d-4b1f-809c-d636d6a7e4c8)
+
+---------------------------------------------
+## Step 3: Testing Serial Connection on Raspberry Pi
 Download the 'serial_pi.py' and transfer the file to your raspberry pi by typing this:
 ```
 scp [source files] [user]@[host]:[path]
@@ -66,7 +86,7 @@ python serial_pi.py
 sudo python3 serial_pi.py
 ```
 ------------------------------------------------
-## Step 3: Testing on LoRa Device
+## Step 4: Testing on LoRa Device
 Download the ```lora_iot_proj.ino``` file and burn it on the Arduino Uno
 
 I connected the Serial cable to my computer. Not sure if it works otherwise
