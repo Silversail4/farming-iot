@@ -1,0 +1,10 @@
+{
+  "Temperature_Sensor": {
+    "id": 1,
+    "temp": "34 degree"
+  },
+  "Humidity Sensor": {
+    "id": 1,
+    "humidity": "30%"
+  }
+}
