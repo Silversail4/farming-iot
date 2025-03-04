@@ -5,6 +5,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 
+#define NODE_ID 1;
 Adafruit_SGP30 sgp;
 
 // Wi-Fi and MQTT setup
@@ -13,9 +14,10 @@ const char* ssid = "dhjle";
 const char* password = "6M9489/d";
 const char* mqtt_server = "192.168.137.1";
 
+//For connecting to pi
 // const char* ssid = "Silver";
 // const char* password = "piyr3617";
-// const char* mqtt_server = "";  
+// const char* mqtt_server = "192.168.116.157";  
 
 const char* mqtt_topic = "co2_reading"; // MQTT Topic
 
@@ -110,10 +112,12 @@ void loop() {
 
     // Create JSON object
     StaticJsonDocument<200> jsonDoc;
-    jsonDoc["TVOC"] = sgp.TVOC;
-    jsonDoc["eCO2"] = sgp.eCO2;
-    jsonDoc["H2"] = sgp.rawH2;
-    jsonDoc["Ethanol"] = sgp.rawEthanol;
+    JsonObject co2Sensor = jsonDoc.createNestedObject("CO2_Sensor");
+    co2Sensor["id"] = NODE_ID;
+    co2Sensor["TVOC"] = sgp.TVOC;
+    co2Sensor["eCO2"] = sgp.eCO2;
+    co2Sensor["H2"] = sgp.rawH2;
+    co2Sensor["Ethanol"] = sgp.rawEthanol;
 
     char jsonBuffer[200];
     serializeJson(jsonDoc, jsonBuffer);
