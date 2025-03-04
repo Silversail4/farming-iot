@@ -8,6 +8,14 @@ dtoverlay=disable-bt
 ```
 **Note:** 'dtoverlay' may have been called before so you may want to comment it out. 
 
+On your Raspberry Pi, type "sudo raspi-config" and
+
+```Disable the shell access over serial (login shell)``` 
+
+```enable the serial port hardware```
+
+Thereafter, reboot your device
+
 ---------------------------------------------
 
 Thereafter, on your Raspberry Pi, type the following to disable serial console:
@@ -110,7 +118,6 @@ Try running the script again:
 ```
 python3 serial_pi.py
 ```
-
 
 
 
