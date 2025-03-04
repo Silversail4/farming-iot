@@ -22,7 +22,21 @@ def read_sensor_data():
         # Extract and clean sensor values
         temp = data.get("Temperature_Sensor", {}).get("temp", "N/A").replace(" degree", "")
         humidity = data.get("Humidity Sensor", {}).get("humidity", "N/A").replace("%", "")
-        return {"temp": temp, "humidity": humidity}
+        co2_data = data.get("Co2 Sensor", {})
+
+        TVOC = co2_data.get("TVOC", "0")
+        eCO2 = co2_data.get("eCO2", "0")
+        H2 = co2_data.get("H2", "0")
+        Ethanol = co2_data.get("Ethanol", "0")
+
+        return {
+            "temp": temp,
+            "humidity": humidity,
+            "TVOC": TVOC,
+            "eCO2": eCO2,
+            "H2": H2,
+            "Ethanol": Ethanol
+        }
     except (json.JSONDecodeError, FileNotFoundError) as e:
         print(f"Error reading {json_file}: {e}")
         return {}

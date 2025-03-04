@@ -66,14 +66,27 @@ void processIncomingMessage(String message) {
     return;
   }
 
-  // Display data
+  // Extract sensor data
   const char* temp = doc["temp"];
   const char* humidity = doc["humidity"];
+  int TVOC = doc["TVOC"];
+  int eCO2 = doc["eCO2"];
+  int H2 = doc["H2"];
+  int Ethanol = doc["Ethanol"];
 
+  // Display data
   Serial.print("Received temp: ");
   Serial.println(temp);
   Serial.print("Received humidity: ");
   Serial.println(humidity);
+  Serial.print("Received TVOC: ");
+  Serial.println(TVOC);
+  Serial.print("Received eCO2: ");
+  Serial.println(eCO2);
+  Serial.print("Received H2: ");
+  Serial.println(H2);
+  Serial.print("Received Ethanol: ");
+  Serial.println(Ethanol);
 
   // Send ACK
   PiSerial.println("ACK");
