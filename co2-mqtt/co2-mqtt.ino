@@ -11,8 +11,8 @@ Adafruit_SGP30 sgp;
 
 // Wi-Fi and MQTT setup
 
-const char* ssid = "dhjle";
-const char* password = "6M9489/d";
+const char* ssid = "Linksys19988";
+const char* password = "531jeffrey";
 const char* mqtt_server = "192.168.10.127"; //pi's ip address
 
 //For connecting to pi
@@ -113,12 +113,12 @@ void loop() {
 
     // Create JSON object
     StaticJsonDocument<200> jsonDoc;
-    JsonObject co2Sensor = jsonDoc.createNestedObject("CO2_Sensor");
-    co2Sensor["id"] = NODE_ID;
-    co2Sensor["TVOC"] = sgp.TVOC;
-    co2Sensor["eCO2"] = sgp.eCO2;
-    co2Sensor["H2"] = sgp.rawH2;
-    co2Sensor["Ethanol"] = sgp.rawEthanol;
+    //JsonObject co2Sensor = jsonDoc.createNestedObject("CO2_Sensor");
+    jsonDoc["id"] = NODE_ID;
+    jsonDoc["TVOC"] = sgp.TVOC;
+    jsonDoc["eCO2"] = sgp.eCO2;
+    jsonDoc["H2"] = sgp.rawH2;
+    jsonDoc["Ethanol"] = sgp.rawEthanol;
 
     char jsonBuffer[200];
     serializeJson(jsonDoc, jsonBuffer);
