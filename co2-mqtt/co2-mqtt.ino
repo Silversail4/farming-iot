@@ -6,20 +6,21 @@
 #include <ArduinoJson.h>
 
 #define NODE_ID 1;
+#define TOPIC "sensor/co2"
 Adafruit_SGP30 sgp;
 
 // Wi-Fi and MQTT setup
 
 const char* ssid = "dhjle";
 const char* password = "6M9489/d";
-const char* mqtt_server = "192.168.137.1";
+const char* mqtt_server = "192.168.10.127"; //pi's ip address
 
 //For connecting to pi
 // const char* ssid = "Silver";
 // const char* password = "piyr3617";
 // const char* mqtt_server = "192.168.116.157";  
 
-const char* mqtt_topic = "co2_reading"; // MQTT Topic
+const char* mqtt_topic = TOPIC; // MQTT Topic
 
 // Create instances
 WiFiClient espClient;
