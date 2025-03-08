@@ -1,0 +1,17 @@
+{
+    "sensor_mock_NODE_2": {
+        "id": 2,
+        "random_number": 32
+    },
+    "sensor_mock_NODE_3": {
+        "id": 3,
+        "random_number": 56
+    },
+    "sensor_co2_NODE_1": {
+        "id": 1,
+        "TVOC": 3,
+        "eCO2": 411,
+        "H2": 14417,
+        "Ethanol": 18904
+    }
+}
