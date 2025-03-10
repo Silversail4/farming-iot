@@ -7,13 +7,16 @@
 
 #define NODE_ID 1;
 #define TOPIC "sensor/co2"
+#define SSID "vqqqq"
+#define pw "qwerty123"
+#define mqtt_server_ip "192.168.137.169"
 Adafruit_SGP30 sgp;
 
 // Wi-Fi and MQTT setup
 
-const char* ssid = "Linksys19988";
-const char* password = "531jeffrey";
-const char* mqtt_server = "192.168.10.127"; //pi's ip address
+const char* ssid = SSID;
+const char* password = pw;
+const char* mqtt_server = mqtt_server_ip; //pi's ip address
 
 //For connecting to pi
 // const char* ssid = "Silver";

@@ -5,7 +5,7 @@ import time
 import threading
 
 # MQTT Broker details
-BROKER = "192.168.10.127"  # Replace with your broker IP
+BROKER = "192.168.137.169"  # Replace with your broker IP
 PORT = 1883
 TOPICS = [("sensor/co2", 0), ("sensor/mock", 0)]  # Topics with QoS
 JSON_FILE = "data.json"
