@@ -15,40 +15,32 @@ PORT = 1883
 TOPICS = [("sensor/co2", 0), ("sensor/mock", 0), ("sensor/light", 0), ("sensor/temp_humidity", 0)]  # Topics with QoS
 JSON_FILE = "data.json"
 
-file_lock = threading.Lock()
-
-# Function to read JSON data safely
+# Function to read existing JSON data
 def read_json():
-    with file_lock:  # Ensures only one thread accesses the file at a time
-        if os.path.exists(JSON_FILE):
-            with open(JSON_FILE, "r") as f:
-                try:
-                    return json.load(f)
-                except json.JSONDecodeError:
-                    print(f"Error decoding JSON in {JSON_FILE}")
-                    return {}
-        return {}
+    if os.path.exists(JSON_FILE):
+        with open(JSON_FILE, "r") as f:
+            return json.load(f)
+    return {}
 
-# Function to write JSON data safely
+# Function to write updated data to JSON
 def write_json(data):
-    with file_lock:  # Ensures exclusive write access
-        with open(JSON_FILE, "w") as f:
-            json.dump(data, f, indent=4)
+    with open(JSON_FILE, "w") as f:
+        json.dump(data, f, indent=4)
 
-# Callback function for MQTT messages
+# Callback function for received messages
 def on_message(client, userdata, message):
     try:
-        payload = message.payload.decode("utf-8")
+        payload = message.payload.decode("utf-8")  # Decode message
         data = json.loads(payload)  # Parse JSON
-        
-        # Read existing data safely
+
+        # Read existing data
         existing_data = read_json()
 
-        # Store data under its respective topic
-        topic_key = message.topic.replace("/", "_")
+        # Store message data under its respective topic
+        topic_key = message.topic.replace("/", "_")# makes the key using topic and id
         existing_data[topic_key] = data
 
-        # Write updated JSON safely
+        # Save updated JSON
         write_json(existing_data)
 
         print(f"Updated {JSON_FILE}: {data}")
@@ -56,19 +48,21 @@ def on_message(client, userdata, message):
     except json.JSONDecodeError as e:
         print(f"Error decoding JSON: {e}")
 
-# Function to start MQTT client
+# Function to initialize MQTT client
 def start_mqtt():
     client = mqtt.Client()
     client.on_message = on_message
     client.connect(BROKER, PORT)
 
-    # Subscribe to topics
+    # Subscribe to all topics
     for topic, qos in TOPICS:
         client.subscribe(topic, qos)
 
     print(f"Subscribed to: {[t[0] for t in TOPICS]}")
+    
+    # Start MQTT loop in a separate thread
+    client.loop_start()
 
-    client.loop_start()  # Start MQTT in a separate thread
     return client
 
 # Function for another task (e.g., logging or monitoring)
@@ -81,7 +75,7 @@ def background_task():
 #-----Lora Portion--------------------------------------------#
 #------------------------------------------------------------#
 # Initialize serial connection to LoRa (Arduino)
-try:
+""" try:
     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)  # Ensure correct USB port
     print("Serial connection established.")
 except serial.SerialException as e:
@@ -89,37 +83,11 @@ except serial.SerialException as e:
     exit(1)
 
 def read_sensor_data():
-    """Read and extract sensor data from the updated data.json format."""
+    # Read and extract sensor data from the updated data.json format.
     try:
-        data = read_json()
-
-        # Extract CO2 sensor data from NODE_1
-        co2_data = data.get("sensor_co2", {})
-        TVOC = co2_data.get("TVOC", 0)
-        eCO2 = co2_data.get("eCO2", 0)
-        H2 = co2_data.get("H2", 0)
-        Ethanol = co2_data.get("Ethanol", 0)  # NEW ATTRIBUTE
+        existing_data = read_json()
+        return existing_data
         
-        #Temperature and humidity
-        temp_data = data.get("sensor_temp_humidity", {})
-        temp = round(temp_data.get("temp", 0), 2)
-        humidity = round(temp_data.get("humidity", 0), 2)
-        
-        #Light
-        light_data = data.get("sensor_light", {})
-        light = light_data.get("light", 0)
-        brightness = light_data.get("brightness", 0)
-
-        return {
-            "temp": temp,
-            "humidity": humidity,
-            "TVOC": TVOC,
-            "eCO2": eCO2,
-            "H2": H2,
-            "Ethanol": Ethanol ,
-            "light": light,
-            "brightness": brightness
-        }
     except (json.JSONDecodeError, FileNotFoundError) as e:
         print(f"Error reading {JSON_FILE}: {e}")
         return {}
@@ -140,14 +108,14 @@ def send_packet(data):
         if ack == "ACK":
             print("ACK received from Arduino.")
         else:
-            print(f"Response: {ack}")
+            print(f"Unexpected response: {ack}")
 
     except serial.SerialException as e:
         print(f"Serial error: {e}")
     except Exception as e:
         print(f"Unexpected error: {e}")
 
-    time.sleep(1)
+    time.sleep(1) """
 
 
 # Main script
@@ -159,16 +127,16 @@ if __name__ == "__main__":
     task_thread = threading.Thread(target=background_task, daemon=True)
     task_thread.start()
     
-    """ while True:
-        time.sleep(1) """
+    while True:
+        time.sleep(1)
 
-    try:
+    """ try:
         while True:
             try:
                 sensor_data = read_json()
                 if sensor_data:
                     send_packet(sensor_data)
-                time.sleep(10)  # Adjust delay to control data frequency
+                time.sleep(3)  # Adjust delay to control data frequency
             except KeyboardInterrupt:
                 print("Exiting...")
                 ser.close()
@@ -176,4 +144,4 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("Stopping MQTT client...")
         mqtt_client.loop_stop()
-        mqtt_client.disconnect()
+        mqtt_client.disconnect() """

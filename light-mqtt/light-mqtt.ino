@@ -73,8 +73,8 @@ void loop() {
     char* light_level;
     int rawValue = analogRead(LIGHT_SENSOR_PIN);  // Read light sensor value (0 - 4095)
     float voltage = rawValue * (3.3 / 4095.0);    // Convert ADC value to voltage
-    float darkness = map(rawValue, 0, 4095, 0, 100);  // Map to 0 - 100% brightness
-    float brightness = 100 - darkness;
+    int darkness = map(rawValue, 0, 4095, 0, 100);  // Map to 0 - 100% brightness
+    int brightness = 100 - darkness;
     if (rawValue < 600) {
       light_level = "Over exposed";
     } else if (rawValue > 3000) {
@@ -107,7 +107,7 @@ void loop() {
     StaticJsonDocument<200> jsonDoc;
 
     jsonDoc["id"] = NODE_ID;
-    jsonDoc["light"] = light_level;
+    jsonDoc["light"] = rawValue;
     jsonDoc["brightness"] = brightness;
 
     char jsonBuffer[200];
