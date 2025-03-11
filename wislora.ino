@@ -64,46 +64,87 @@ void processIncomingMessage(char *message) {
 
     if (!start || !end || start >= end) {
         Serial.println(F("Error: JSON markers not found!"));
+        Serial.print(F("Received Message: '"));
+        Serial.print(message);
+        Serial.println(F("'"));
         return;
     }
 
-    // Make sure the extracted JSON is null-terminated
+    // Ensure the extracted JSON is null-terminated
     int jsonLength = end - start + 1;
-    char jsonBuffer[128];  // Small buffer
+    char jsonBuffer[128];  // Ensure buffer is large enough
     strncpy(jsonBuffer, start, jsonLength);
     jsonBuffer[jsonLength] = '\0';
 
-    Serial.print(F("Extracted JSON: "));
-    Serial.println(jsonBuffer);
+    // Debug: Print Extracted JSON Inside Markers
+    Serial.print(F("DEBUG: Extracted JSON -> '"));
+    Serial.print(jsonBuffer);
+    Serial.println(F("'"));
 
-    // Extract values manually using sscanf() (low memory)
-    int temp, humidity, TVOC, eCO2, H2;
-    int matched = sscanf(jsonBuffer, "{\"temp\": %d, \"humidity\": %d, \"TVOC\": %d, \"eCO2\": %d, \"H2\": %d}",
-                         &temp, &humidity, &TVOC, &eCO2, &H2);
+    // Trim unexpected spaces
+    for (int i = 0; i < jsonLength; i++) {
+        if (jsonBuffer[i] == '\n' || jsonBuffer[i] == '\r') {
+            jsonBuffer[i] = '\0';  // Remove any trailing newlines
+        }
+    }
 
-    if (matched < 5) {  // Check if all 5 values were extracted correctly
-        Serial.println(F("Error: Failed to parse JSON manually!"));
+    // Debug: Print JSON After Cleaning
+    Serial.print(F("DEBUG: Cleaned JSON -> '"));
+    Serial.print(jsonBuffer);
+    Serial.println(F("'"));
+
+    // Extract values manually using sscanf()
+    int temp, humidity, TVOC, eCO2, H2, Ethanol, light, brightness;
+
+    int matched = sscanf(jsonBuffer,
+                         "{\"T\":%d,\"H\":%d,\"V\":%d,\"C\":%d,\"H2\":%d,\"E\":%d,\"L\":%d,\"B\":%d}",
+                         &temp, &humidity, &TVOC, &eCO2, &H2, &Ethanol, &light, &brightness);
+
+    if (matched != 8) {
+        Serial.print(F("Error: Failed to parse JSON manually! Parsed fields: "));
+        Serial.println(matched);
         return;
     }
 
-    Serial.println(F("✅ JSON parsed successfully (Manual)!"));
+    Serial.println(F("JSON Parsed Successfully!"));
 
-    // 🟢 Prepare LoRa payload (5 bytes)
-    uint8_t lora_payload[5] = { (uint8_t)temp, (uint8_t)humidity, (uint8_t)TVOC, (uint8_t)eCO2, (uint8_t)H2 };
+    Serial.print(F("Parsed values -> "));
+    Serial.print(F("Temp: ")); Serial.print(temp);
+    Serial.print(F(", Humidity: ")); Serial.print(humidity);
+    Serial.print(F(", TVOC: ")); Serial.print(TVOC);
+    Serial.print(F(", eCO2: ")); Serial.print(eCO2);
+    Serial.print(F(", H2: ")); Serial.print(H2);
+    Serial.print(F(", Ethanol: ")); Serial.print(Ethanol);
+    Serial.print(F(", Light: ")); Serial.print(light);
+    Serial.print(F(", Brightness: ")); Serial.println(brightness);
+
+    // Prepare LoRa payload (11 bytes)
+    uint8_t lora_payload[11] = {
+        (uint8_t) temp,   
+        (uint8_t) humidity, 
+        (uint8_t) TVOC, 
+        (uint8_t)(eCO2 >> 8), (uint8_t)(eCO2 & 0xFF),
+        (uint8_t)(H2 >> 8), (uint8_t)(H2 & 0xFF),
+        (uint8_t)(Ethanol >> 8), (uint8_t)(Ethanol & 0xFF),
+        (uint8_t) brightness,
+        (uint8_t) light
+    };
 
     Serial.print(F("Sending LoRa payload: "));
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 11; i++) {
         Serial.print(lora_payload[i]);
         Serial.print(" ");
     }
     Serial.println();
 
-    sendLoRaMessage(lora_payload, 5);
+    sendLoRaMessage(lora_payload, 11);
 }
+
+
 
 void sendLoRaMessage(uint8_t *data, uint8_t len) {
     if (LMIC.opmode & OP_TXRXPEND) {
-        Serial.println(F("⚠ LoRa transmission pending, skipping send."));
+        Serial.println(F("LoRa transmission pending, skipping send."));
         return;
     }
 
