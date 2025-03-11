@@ -1,17 +1,19 @@
 {
-  "Temperature_Sensor": {
-    "id": 1,
-    "temp": "34 degree"
-  },
-  "Humidity Sensor": {
-    "id": 1,
-    "humidity": "30%"
-  },
-  "Co2 Sensor": {
-    "id": 1,
-    "TVOC": 0,
-    "eCO2": 0,
-    "H2": 0,
-    "Ethanol": 0
-  }
+    "sensor_co2": {
+        "id": 1,
+        "TVOC": 14,
+        "eCO2": 400,
+        "H2": 14815,
+        "Ethanol": 20236
+    },
+    "sensor_light": {
+        "id": 4,
+        "light": 2000,
+        "brightness": 72
+    },
+    "sensor_temp_humidity": {
+        "id": "5",
+        "temp": 24,
+        "humidity": 42
+    }
 }
