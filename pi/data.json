@@ -1,17 +1,19 @@
 {
-    "sensor_mock_NODE_2": {
-        "id": 2,
-        "random_number": 32
-    },
-    "sensor_mock_NODE_3": {
-        "id": 3,
-        "random_number": 56
-    },
-    "sensor_co2_NODE_1": {
+    "sensor_co2": {
         "id": 1,
-        "TVOC": 3,
-        "eCO2": 411,
-        "H2": 14417,
-        "Ethanol": 18904
+        "TVOC": 14,
+        "eCO2": 400,
+        "H2": 14815,
+        "Ethanol": 20236
+    },
+    "sensor_light": {
+        "id": 4,
+        "light": "Normal",
+        "brightness": 72
+    },
+    "sensor_temp_humidity": {
+        "id": "5",
+        "temp": 24.07,
+        "humidity": 42.7
     }
 }
