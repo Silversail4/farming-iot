@@ -20,53 +20,62 @@ def read_sensor_data():
             data = json.load(f)
 
         # Extract CO2 sensor data from NODE_1
-        co2_data = data.get("sensor_co2_NODE_1", {})
+        co2_data = data.get("sensor_co2", {})
         TVOC = co2_data.get("TVOC", 0)
         eCO2 = co2_data.get("eCO2", 0)
         H2 = co2_data.get("H2", 0)
         Ethanol = co2_data.get("Ethanol", 0)  # NEW ATTRIBUTE
 
-        # Extract mock sensor data (example: NODE_2, NODE_3)
-        node_2_data = data.get("sensor_mock_NODE_2", {})
-        node_3_data = data.get("sensor_mock_NODE_3", {})
+        light_data = data.get("sensor_light", {})
+        light = light_data.get("light", 0)
+        brightness = light_data.get("brightness", 0)
 
-        temp = node_2_data.get("random_number", 0)  # Assuming this represents temperature
-        humidity = node_3_data.get("random_number", 0)  # Assuming this represents humidity
+        temp_humidity_data = data.get("sensor_temp_humidity", {})
+        temp = temp_humidity_data.get("temp", 0)
+        humidity = temp_humidity_data.get("humidity", 0)
 
-        return {
-            "temp": temp,
-            "humidity": humidity,
-            "TVOC": TVOC,
-            "eCO2": eCO2,
+        formatted_data = {
+            "T": temp,
+            "H": humidity,
+            "V": TVOC,
+            "C": eCO2,
             "H2": H2,
-            "Ethanol": Ethanol 
+            "E": Ethanol,
+            "L": light,
+            "B": brightness
         }
+
+        return formatted_data
+    
     except (json.JSONDecodeError, FileNotFoundError) as e:
         print(f"Error reading {json_file}: {e}")
         return {}
 
 def send_packet(data):
-    """Send JSON data with markers using UTF-8 encoding."""
+    """
+    Sends formatted JSON data with markers using UTF-8 encoding.
+    Waits for acknowledgment from Arduino.
+    """
     try:
-        json_data = json.dumps(data)  # Convert dict to JSON string
+        json_data = json.dumps(data, separators=(',', ':'))  # Compact JSON format
         packet = f"<START>{json_data}<END>\n"  # Ensure markers are included
         
         ser.write(packet.encode('utf-8'))  # Send encoded data
         ser.flush()  # Ensure buffer is cleared
         
-        print(f"Sent packet to Arduino: {packet.strip()}")
+        print(f"📤 Sent packet to Arduino: {packet.strip()}")
 
         # Wait for acknowledgment from Arduino
         ack = ser.readline().decode('utf-8', errors='ignore').strip()
         if ack == "ACK":
-            print("ACK received from Arduino.")
+            print("✅ ACK received from Arduino.")
         else:
-            print(f"Unexpected response: {ack}")
+            print(f"⚠️ Unexpected response: {ack}")
 
     except serial.SerialException as e:
-        print(f"Serial error: {e}")
+        print(f"❌ Serial error: {e}")
     except Exception as e:
-        print(f"Unexpected error: {e}")
+        print(f"❌ Unexpected error: {e}")
 
     time.sleep(1)
 
