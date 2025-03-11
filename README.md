@@ -119,10 +119,49 @@ Try running the script again:
 python3 serial_pi.py
 ```
 
+------------------------------------------------
+#Set up with Gateway WIS
+
+Turn on your Gateway WIS Edge Lite 2 Device and connect to the Wifi name: RAK7268V2_A545
+
+On your web browser, enter:
+```
+https://192.168.230.1/
+```
+
+Enter the credentials:
+User:
+```
+root
+```
+Password:
+```
+admin12345678!
+```
 
 
+##Then set up your network under WAN and connect to a Wifi or mobile hotspot to access internet. 
+##Ensure Configuration network is set to Packet Forwarder and server: au1.cloud.thethings.network
 
+------------------------------------------------
+#Establish connection with TTN
+Go to:
+```
+https://www.thethingsnetwork.org
+```
 
+Login to the credentials underneath your Gateway WIS Edge Lite 2
+
+Select AU1 as region
+
+Go to Gateways and you will see your registered WIS gateway 
+
+Go to your registered WIS gateway > general setting, make sure your frequency plan is:
+```
+AU_915_928_FSB_2
+```
+
+Go to Applications and create a new application, the application ID
 
 
 
