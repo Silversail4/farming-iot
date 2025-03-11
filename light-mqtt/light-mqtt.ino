@@ -69,13 +69,25 @@ void loop() {
     }
     client.loop(); // Maintain MQTT connection
 
+    // Read light sensor value
+    char* light_level;
     int rawValue = analogRead(LIGHT_SENSOR_PIN);  // Read light sensor value (0 - 4095)
     float voltage = rawValue * (3.3 / 4095.0);    // Convert ADC value to voltage
     float darkness = map(rawValue, 0, 4095, 0, 100);  // Map to 0 - 100% brightness
     float brightness = 100 - darkness;
+    if (rawValue < 600) {
+      light_level = "Over exposed";
+    } else if (rawValue > 3000) {
+      light_level = "Under exposed";
+    } else {
+      light_level = "Normal";
+    }
+    
     // Display on Serial Monitor
     Serial.print("Raw ADC Value: ");
     Serial.print(rawValue);
+    Serial.print(" | Light Level: ");
+    Serial.print(light_level);
     Serial.print(" | Voltage: ");
     Serial.print(voltage, 2);
     Serial.print("V | Brightness: ");
@@ -85,9 +97,9 @@ void loop() {
     // Display on M5StickC LCD
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setCursor(10, 20);
-    M5.Lcd.printf("Light: %d", rawValue);
+    M5.Lcd.printf("Raw value: %d", rawValue);
     M5.Lcd.setCursor(10, 50);
-    M5.Lcd.printf("Voltage: %.2fV", voltage);
+    M5.Lcd.printf("Light level: %.2fV", light_level);
     M5.Lcd.setCursor(10, 80);
     M5.Lcd.printf("Brightness: %.0f%%", brightness);
 
@@ -95,7 +107,7 @@ void loop() {
     StaticJsonDocument<200> jsonDoc;
 
     jsonDoc["id"] = NODE_ID;
-    jsonDoc["light"] = rawValue;
+    jsonDoc["light"] = light_level;
     jsonDoc["brightness"] = brightness;
 
     char jsonBuffer[200];
