@@ -71,52 +71,6 @@ def background_task():
         print("Running background task...")
         time.sleep(5)  # Simulate work
         
-#------------------------------------------------------------#
-#-----Lora Portion--------------------------------------------#
-#------------------------------------------------------------#
-# Initialize serial connection to LoRa (Arduino)
-""" try:
-    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)  # Ensure correct USB port
-    print("Serial connection established.")
-except serial.SerialException as e:
-    print(f"Error opening serial port: {e}")
-    exit(1)
-
-def read_sensor_data():
-    # Read and extract sensor data from the updated data.json format.
-    try:
-        existing_data = read_json()
-        return existing_data
-        
-    except (json.JSONDecodeError, FileNotFoundError) as e:
-        print(f"Error reading {JSON_FILE}: {e}")
-        return {}
-
-def send_packet(data):
-    # Send JSON data with markers using UTF-8 encoding.
-    try:
-        json_data = json.dumps(data)  # Convert dict to JSON string
-        packet = f"<START>{json_data}<END>\n"  # Ensure markers are included
-        
-        ser.write(packet.encode('utf-8'))  # Send encoded data
-        ser.flush()  # Ensure buffer is cleared
-        
-        print(f"Sent packet to Arduino: {packet.strip()}")
-
-        # Wait for acknowledgment from Arduino
-        ack = ser.readline().decode('utf-8', errors='ignore').strip()
-        if ack == "ACK":
-            print("ACK received from Arduino.")
-        else:
-            print(f"Unexpected response: {ack}")
-
-    except serial.SerialException as e:
-        print(f"Serial error: {e}")
-    except Exception as e:
-        print(f"Unexpected error: {e}")
-
-    time.sleep(1) """
-
 
 # Main script
 if __name__ == "__main__":
@@ -130,18 +84,3 @@ if __name__ == "__main__":
     while True:
         time.sleep(1)
 
-    """ try:
-        while True:
-            try:
-                sensor_data = read_json()
-                if sensor_data:
-                    send_packet(sensor_data)
-                time.sleep(3)  # Adjust delay to control data frequency
-            except KeyboardInterrupt:
-                print("Exiting...")
-                ser.close()
-                break
-    except KeyboardInterrupt:
-        print("Stopping MQTT client...")
-        mqtt_client.loop_stop()
-        mqtt_client.disconnect() """

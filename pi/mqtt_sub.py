@@ -72,10 +72,10 @@ def start_mqtt():
     return client
 
 # Function for another task (e.g., logging or monitoring)
-def background_task():
+""" def background_task():
     while True:
         print("Running background task...")
-        time.sleep(5)  # Simulate work
+        time.sleep(5)  # Simulate work """
         
 #------------------------------------------------------------#
 #-----Lora Portion--------------------------------------------#
@@ -102,8 +102,8 @@ def read_sensor_data():
         
         #Temperature and humidity
         temp_data = data.get("sensor_temp_humidity", {})
-        temp = round(temp_data.get("temp", 0), 2)
-        humidity = round(temp_data.get("humidity", 0), 2)
+        temp = temp_data.get("temp", 0)
+        humidity = temp_data.get("humidity", 0)
         
         #Light
         light_data = data.get("sensor_light", {})
@@ -111,14 +111,14 @@ def read_sensor_data():
         brightness = light_data.get("brightness", 0)
 
         return {
-            "temp": temp,
-            "humidity": humidity,
-            "TVOC": TVOC,
-            "eCO2": eCO2,
+            "T": temp,
+            "H": humidity,
+            "V": TVOC,
+            "C": eCO2,
             "H2": H2,
-            "Ethanol": Ethanol ,
-            "light": light,
-            "brightness": brightness
+            "E": Ethanol ,
+            "L": light,
+            "B": brightness
         }
     except (json.JSONDecodeError, FileNotFoundError) as e:
         print(f"Error reading {JSON_FILE}: {e}")
@@ -156,8 +156,8 @@ if __name__ == "__main__":
     mqtt_client = start_mqtt()
 
     # Start another background task in a separate thread
-    task_thread = threading.Thread(target=background_task, daemon=True)
-    task_thread.start()
+    """ task_thread = threading.Thread(target=background_task, daemon=True)
+    task_thread.start() """
     
     """ while True:
         time.sleep(1) """
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     try:
         while True:
             try:
-                sensor_data = read_json()
+                sensor_data = read_sensor_data()
                 if sensor_data:
                     send_packet(sensor_data)
                 time.sleep(10)  # Adjust delay to control data frequency

@@ -8,7 +8,7 @@
     },
     "sensor_light": {
         "id": 4,
-        "light": 1740,
+        "light": "Normal",
         "brightness": 72
     },
     "sensor_temp_humidity": {
