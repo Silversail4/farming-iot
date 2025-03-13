@@ -94,13 +94,13 @@ void processIncomingMessage(char *message) {
     Serial.println(F("'"));
 
     // Extract values manually using sscanf()
-    int temp, humidity, TVOC, eCO2, H2, Ethanol, light, brightness;
+    int temp, humidity, TVOC, eCO2, light, brightness;
 
     int matched = sscanf(jsonBuffer,
-                         "{\"T\":%d,\"H\":%d,\"V\":%d,\"C\":%d,\"H2\":%d,\"E\":%d,\"L\":%d,\"B\":%d}",
-                         &temp, &humidity, &TVOC, &eCO2, &H2, &Ethanol, &light, &brightness);
+                         "{\"T\":%d,\"H\":%d,\"V\":%d,\"C\":%d,\"L\":%d,\"B\":%d}",
+                         &temp, &humidity, &TVOC, &eCO2, &light, &brightness);
 
-    if (matched != 8) {
+    if (matched != 6) {
         Serial.print(F("Error: Failed to parse JSON manually! Parsed fields: "));
         Serial.println(matched);
         return;
@@ -113,31 +113,27 @@ void processIncomingMessage(char *message) {
     Serial.print(F(", Humidity: ")); Serial.print(humidity);
     Serial.print(F(", TVOC: ")); Serial.print(TVOC);
     Serial.print(F(", eCO2: ")); Serial.print(eCO2);
-    Serial.print(F(", H2: ")); Serial.print(H2);
-    Serial.print(F(", Ethanol: ")); Serial.print(Ethanol);
     Serial.print(F(", Light: ")); Serial.print(light);
     Serial.print(F(", Brightness: ")); Serial.println(brightness);
 
     // Prepare LoRa payload (11 bytes)
-    uint8_t lora_payload[11] = {
+    uint8_t lora_payload[8] = {
         (uint8_t) temp,   
         (uint8_t) humidity, 
         (uint8_t) TVOC, 
         (uint8_t)(eCO2 >> 8), (uint8_t)(eCO2 & 0xFF),
-        (uint8_t)(H2 >> 8), (uint8_t)(H2 & 0xFF),
-        (uint8_t)(Ethanol >> 8), (uint8_t)(Ethanol & 0xFF),
         (uint8_t) brightness,
-        (uint8_t) light
+        (uint8_t)(light >> 8), (uint8_t)(light & 0xFF)
     };
 
     Serial.print(F("Sending LoRa payload: "));
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 8; i++) {
         Serial.print(lora_payload[i]);
         Serial.print(" ");
     }
     Serial.println();
 
-    sendLoRaMessage(lora_payload, 11);
+    sendLoRaMessage(lora_payload, 8);
 }
 
 
