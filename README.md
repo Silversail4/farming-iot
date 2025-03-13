@@ -162,9 +162,140 @@ AU_915_928_FSB_2
 ```
 
 Go to Applications and create a new application, the application ID
+Make sure you have the following configurations:
+- Frequency Plan: “Australia 915-928 MHz, FSB 2”
+- LoRaWan Version: “LoRaWan Specification 1.0.2”
+- Regional Parameters Version: “RP001 Regional Parameters 1.0.2 revision B”
+- Activation mode: Over The Air Activation (OTAA)
+- Additional LoRaWAN class capabilities: None (Class A only)
+
+Go to End Devices and register a new end device
+- Choose and enter End Device ID.
+- Join EUI: 00 00 00 00 00 00 00 00
+- Application EUI: Auto-generate.
+- App Key: Auto-generate.
+
+------------------------------------------------
+
+#Complete setup with Arduino
+
+Go to Arduino IDE: 
+- Install the MCCI LoRaWAN LMIC library.
+- In the Arduino IDE, select menu Sketch | Include Library | Manage Libraries
+- In the search box enter: MCCI
+- Click the MCCI LoRaWAN LMIC library by Terry Moore.
+- Select the latest version and press the Install button.
+
+Configure the MCCI LoRaWAN LMIC Library:
+- Edit file lmic_project_config.h.
+- This file can be found at: ".../libraries/MCCI_LoRaWAN_LMIC_library/project_config"
+- Comment "#define CFG_us915 1", uncomment "#define CFG_au915 1"
+
+To configure your end device to your Lora transceiver:
+Go to your end device and look for Dev EUI, App EUI and App Key
+
+Go to:
+```
+https://www.mobilefish.com/download/lora/eui_key_converter.html
+```
+Enter the 3 keys inside this website to convert to byte array.
+
+Return to your arduino code and ensure these values are according to the keys generated from the website:
+```
+static const u1_t PROGMEM APPEUI[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+void os_getArtEui(u1_t* buf) { memcpy_P(buf, APPEUI, 8); }
+
+static const u1_t PROGMEM DEVEUI[8] = {0x9C, 0xE9, 0x06, 0xD0, 0x7E, 0xD5, 0xB3, 0x70};
+void os_getDevEui(u1_t* buf) { memcpy_P(buf, DEVEUI, 8); }
+
+static const u1_t PROGMEM APPKEY[16] = {0x89, 0xE2, 0xA9, 0x60, 0x83, 0x72, 0xE2, 0x4D, 0xC5, 0x34, 0xBE, 0xFC, 0x6A, 0xEA, 0x1C, 0x55};
+void os_getDevKey(u1_t* buf) { memcpy_P(buf, APPKEY, 16); }
+```
+
+Check your lora device if the pin mappings are correct:
+```
+const lmic_pinmap lmic_pins = {
+    .nss = 10,
+    .rxtx = LMIC_UNUSED_PIN,
+    .rst = 7,
+    .dio = {2, 5, 6},
+};
+```
 
 
+To compile and upload the code:
+- Choose Arduino Uno as your board
+- Upload the code into your connected Lora device
+
+------------------------------------------------
+
+#Once uploaded the arduino code, connect the lora device to the raspberry pi via USB connection
+
+Then run:
+```
+python3 serial_pi.py
+```
+
+You will see the pi is sending messages to the lora device and on the terminal, it will display the messages Lora is sending.
+
+#The following messages to understand the flow of the transmission from Pi -> Lora -> WIS gateway device
+
+The packet containing the formatted data from Pi it sent to the Lora device
+```
+Sent packet to Arduino: <START>{"T":24,"H":42,"V":14,"C":400,"L":2000,"B":72}<END>
+```
+
+The Lora device has received the packet and is parsing the object to send to WIS gateway
+```
+Processing JSON message (Manual Parsing)...
+DEBUG: Extracted JSON -> '{"T":24,"H":42,"V":14,"C":400,"L":2000,"B":72}'
+DEBUG: Cleaned JSON -> '{"T":24,"H":42,"V":14,"C":400,"L":2000,"B":72}'
+JSON Parsed Successfully!
+```
+
+Lora has successfully transmitted the data to WIS gateway
+```
+Parsed values -> Temp: 24, Humidity: 42, TVOC: 14, eCO2: 400, Light: 2000, Brightness: 72
+Sending LoRa payload: 24 42 14 1 144 72 7 208
+Transmission successful!
+```
+
+------------------------------------------------
+
+#Data Retrieval and intepretation on TTN console
+
+Go to Gateway > Live Data:
+You will see:
+```
+Received uplink message
+```
+It means that the Gateway receives the message from Lora and it will proceed to display it on Application side of TTN
 
 
+Go to Application > End Devices > Payload formatter
 
+To intepret the data that is sent from Lora Device, select Custom Javascript and enter this decoder format:
+```
+function decodeUplink(input) {
+    return {
+        data: {
+            T: input.bytes[0],             
+            H: input.bytes[1],             
+            V: input.bytes[2],                    
+            C: (input.bytes[3] << 8) | input.bytes[4],  // eCO2 (2 bytes)
+            B: input.bytes[5],                    
+            L: (input.bytes[6] << 8) | input.bytes[7]   // Light (2 bytes)
+        },
+        warnings: [],
+        errors: []
+    };
+}
+```
 
+Save changes.
+
+Go to your registered application end device and look out for the decoded payload, you will see the extracted message that is sent from Lora Device!
+
+------------------------------------------------
+
+#Data Visualization 
