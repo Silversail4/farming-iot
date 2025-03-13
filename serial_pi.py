@@ -23,8 +23,8 @@ def read_sensor_data():
         co2_data = data.get("sensor_co2", {})
         TVOC = co2_data.get("TVOC", 0)
         eCO2 = co2_data.get("eCO2", 0)
-        H2 = co2_data.get("H2", 0)
-        Ethanol = co2_data.get("Ethanol", 0)  # NEW ATTRIBUTE
+        #H2 = co2_data.get("H2", 0)
+        #Ethanol = co2_data.get("Ethanol", 0)  # NEW ATTRIBUTE
 
         light_data = data.get("sensor_light", {})
         light = light_data.get("light", 0)
@@ -39,8 +39,6 @@ def read_sensor_data():
             "H": humidity,
             "V": TVOC,
             "C": eCO2,
-            "H2": H2,
-            "E": Ethanol,
             "L": light,
             "B": brightness
         }
