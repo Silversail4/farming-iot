@@ -8,7 +8,7 @@
 #define TOPIC "sensor/light"
 #define SSID "vqqqq"
 #define pw "qwerty123"
-#define mqtt_server_ip "192.168.137.169"
+#define mqtt_server_ip "192.168.137.253"
 
 #define LIGHT_SENSOR_PIN 32  // ADC1 Channel 0 (GPIO36)
 

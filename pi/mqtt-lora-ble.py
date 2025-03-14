@@ -1,3 +1,4 @@
+from bluepy.btle import Scanner, Peripheral, BTLEException, BTLEDisconnectError
 import paho.mqtt.client as mqtt
 import json
 import time
@@ -6,7 +7,7 @@ import serial
 
 # This is the code currently running on pi
 # MQTT Broker details
-BROKER = "192.168.137.253"
+BROKER = "192.168.137.169"
 PORT = 1883
 TOPICS = ["sensor/co2", "sensor/mock", "sensor/light", "sensor/temp_humidity"]
 

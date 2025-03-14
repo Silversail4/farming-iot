@@ -39,12 +39,12 @@ void setup() {
     Serial.begin(115200);
     while (!Serial) { delay(10); }
 
-    Serial.println("SGP30 test");
+    //Serial.println("SGP30 test");
 
-    if (!sgp.begin()) {
-        Serial.println("Sensor not found :(");
-        while (1);
-    }
+    // if (!sgp.begin()) {
+    //     Serial.println("Sensor not found :(");
+    //     while (1);
+    // }
     
     Serial.print("Found SGP30 serial #");
     Serial.print(sgp.serialnumber[0], HEX);
@@ -78,15 +78,16 @@ void setup() {
 }
 
 void loop() {
-    if (!sgp.IAQmeasure()) {
-        Serial.println("Measurement failed");
-        return;
-    }
-
-    int eco2Value = sgp.eCO2;  // Get eCO2 reading
+    // if (!sgp.IAQmeasure()) {
+    //     Serial.println("Measurement failed");
+    //     return;
+    // }
+    // Generate a random number between 400 and 450
+    int randomValue = random(400, 451);
+    //int eco2Value = sgp.eCO2;  // Get eCO2 reading
 
     Serial.print("eCO2: ");
-    Serial.print(eco2Value);
+    Serial.print(randomValue);
     Serial.println(" ppm");
 
     // Display on M5StickC Plus
@@ -94,7 +95,7 @@ void loop() {
     M5.Lcd.setCursor(10, 20);
     M5.lcd.printf("BLE version");
     M5.Lcd.setCursor(10, 50);
-    M5.Lcd.printf("eCO2: %d ppm", eco2Value);
+    M5.Lcd.printf("eCO2: %d ppm", randomValue);
     // M5.Lcd.setCursor(10, 80);
     // M5.Lcd.printf("H2: %d", sgp.rawH2);
     // M5.Lcd.setCursor(10, 110);
@@ -103,7 +104,7 @@ void loop() {
     // Send eCO2 value over BLE if connected
     if (deviceConnected) {
         char valueStr[10];
-        sprintf(valueStr, "%d ppm", eco2Value);
+        sprintf(valueStr, "%d ppm", randomValue);
         CO2Characteristics.setValue(valueStr);
         CO2Characteristics.notify();
         Serial.println("Sent eCO2 via BLE");

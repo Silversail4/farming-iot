@@ -6,7 +6,7 @@ import serial
 
 # This code is to make it take the previous values instead of reseting
 # MQTT Broker details
-BROKER = "192.168.137.169"
+BROKER = "192.168.137.253"
 PORT = 1883
 TOPICS = ["sensor/co2", "sensor/mock", "sensor/light", "sensor/temp_humidity"]
 
@@ -21,7 +21,7 @@ except serial.SerialException as e:
 # Dictionary to store sensor data with default values
 sensor_data = {
     "sensor_temp_humidity": {"temp": 0, "humidity": 0},
-    "sensor_co2": {"TVOC": 0, "eCO2": 0, "H2": 0, "Ethanol": 0},
+    "sensor_co2": {"TVOC": 0, "eCO2": 0},
     "sensor_light": {"light": 0, "brightness": 0}
 }
 
@@ -64,8 +64,6 @@ def send_to_lora():
                     "H": sensor_data["sensor_temp_humidity"].get("humidity", 0),
                     "V": sensor_data["sensor_co2"].get("TVOC", 0),
                     "C": sensor_data["sensor_co2"].get("eCO2", 0),
-                    "H2": sensor_data["sensor_co2"].get("H2", 0),
-                    "E": sensor_data["sensor_co2"].get("Ethanol", 0),
                     "L": sensor_data["sensor_light"].get("light", 0),
                     "B": sensor_data["sensor_light"].get("brightness", 0)
                 }

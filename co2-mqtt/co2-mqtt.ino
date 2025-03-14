@@ -9,7 +9,7 @@
 #define TOPIC "sensor/co2"
 #define SSID "vqqqq"
 #define pw "qwerty123"
-#define mqtt_server_ip "192.168.137.169"
+#define mqtt_server_ip "192.168.137.253"
 Adafruit_SGP30 sgp;
 
 // Wi-Fi and MQTT setup
@@ -109,10 +109,10 @@ void loop() {
     M5.Lcd.printf("TVOC: %d ppb", sgp.TVOC);
     M5.Lcd.setCursor(10, 50);
     M5.Lcd.printf("eCO2: %d ppm", sgp.eCO2);
-    M5.Lcd.setCursor(10, 80);
-    M5.Lcd.printf("H2: %d", sgp.rawH2);
-    M5.Lcd.setCursor(10, 110);
-    M5.Lcd.printf("Ethanol: %d", sgp.rawEthanol);
+    // M5.Lcd.setCursor(10, 80);
+    // M5.Lcd.printf("H2: %d", sgp.rawH2);
+    // M5.Lcd.setCursor(10, 110);
+    // M5.Lcd.printf("Ethanol: %d", sgp.rawEthanol);
 
     // Create JSON object
     StaticJsonDocument<200> jsonDoc;
@@ -120,8 +120,6 @@ void loop() {
     jsonDoc["id"] = NODE_ID;
     jsonDoc["TVOC"] = sgp.TVOC;
     jsonDoc["eCO2"] = sgp.eCO2;
-    jsonDoc["H2"] = sgp.rawH2;
-    jsonDoc["Ethanol"] = sgp.rawEthanol;
 
     char jsonBuffer[200];
     serializeJson(jsonDoc, jsonBuffer);

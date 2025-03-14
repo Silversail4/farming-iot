@@ -13,7 +13,7 @@ SSID = "vqqqq"
 PASSWORD = "qwerty123"
 
 # MQTT Broker Details
-MQTT_BROKER = "192.168.137.169"  # You can change this to your broker
+MQTT_BROKER = "192.168.137.253"  # You can change this to your broker
 MQTT_TOPIC = "sensor/temp_humidity"
 CLIENT_ID = "5"
 
