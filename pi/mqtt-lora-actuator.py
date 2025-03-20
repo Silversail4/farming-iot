@@ -8,10 +8,10 @@ import serial
 # MQTT Broker details
 BROKER = "192.168.137.253"
 PORT = 1883
-TOPICS = ["sensor/co2", "sensor/mock", "sensor/light", "sensor/temp_humidity"]
+TOPICS = ["sensor/co2", "sensor/mock", "sensor/light", "sensor/temp_humidity", "raspberrypi/threshold"]
 
 # eCO2 threshold for controlling the plug
-ECO2_THRESHOLD = 700  # Set your threshold value here
+ECO2_THRESHOLD = 0  
 
 # Initialize serial connection to LoRa (Arduino)
 try:
@@ -30,13 +30,18 @@ sensor_data = {
 
 # Callback function for received MQTT messages
 def on_message(client, userdata, message):
-    global sensor_data
+    global sensor_data, ECO2_THRESHOLD
     try:
         payload = message.payload.decode("utf-8")
         data = json.loads(payload)
         topic_key = message.topic.replace("/", "_")
-        sensor_data[topic_key] = data
-        print(f"[MQTT] Received data: {topic_key} -> {data}")
+        
+        if topic_key == "raspberrypi_threshold":
+            ECO2_THRESHOLD = int(data)
+            print(f"[MQTT] Updated eCO2 threshold: {ECO2_THRESHOLD}")
+        else:
+            sensor_data[topic_key] = data
+            print(f"[MQTT] Received data: {topic_key} -> {data}")
         
         # Check if eCO2 value is available and compare it to threshold
         eCO2_value = sensor_data["sensor_co2"].get("eCO2", 0)
