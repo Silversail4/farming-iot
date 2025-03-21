@@ -352,6 +352,7 @@ In the node setting:
 - Click tick on TLS
 - Then go to Security and fill in the credentials for MQTT from the TTN MQTT setting
 - Click update and you are ready
+- When doing the saving the settings, you may be prompted to upload a CAA cert, you can upload the isrgrootx1.pem and save it
 
 Since we are sending a JSON object, take a JSON node and link it to the MQTT in node
 - To decode the JSON, take a function node and link it on the other side of JSON node
