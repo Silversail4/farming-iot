@@ -1,4 +1,4 @@
-# CSC2106: Container Farming Project (Group 23)
+# CSC2106: Container Farming Project (Group 23) 🌱
 ---
 - This project focuses on container farming using an IoT-based monitoring system. The system collects environmental data such as temperature, humidity, CO₂ levels, and light intensity from M5StickC Plus devices and transmits it to a Raspberry Pi aggregator via MQTT for real-time monitoring and analysis.
 - **Set up Guides:**
