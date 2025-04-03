@@ -91,8 +91,8 @@ void loop() {
     Serial.print(" | Voltage: ");
     Serial.print(voltage, 2);
     Serial.print("V | Brightness: ");
-    Serial.print(brightness);
-    Serial.println("%");
+    //Serial.print(brightness);
+    //Serial.println("%");
 
     // Display on M5StickC LCD
     M5.Lcd.fillScreen(BLACK);
@@ -101,7 +101,7 @@ void loop() {
     M5.Lcd.setCursor(10, 50);
     M5.Lcd.printf("Light level: %.2fV", light_level);
     M5.Lcd.setCursor(10, 80);
-    M5.Lcd.printf("Brightness: %.0f%%", brightness);
+    //M5.Lcd.printf("Brightness: %.0f%%", brightness);
 
     // Create JSON object
     StaticJsonDocument<200> jsonDoc;
