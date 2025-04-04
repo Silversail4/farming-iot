@@ -13,6 +13,8 @@ TOPICS = ["sensor/co2", "sensor/mock", "sensor/light", "sensor/temp_humidity", "
 # eCO2 threshold for controlling the plug
 ECO2_THRESHOLD = 0  
 
+packets_sent = 0  # Counter for packets sent to Arduino
+
 # Initialize serial connection to LoRa (Arduino)
 try:
     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
@@ -82,6 +84,7 @@ def publish_mqtt(command):
         
 # Function to format and send data to LoRa
 def send_to_lora():
+    global packets_sent
     while True:
         if sensor_data:
             try:
@@ -94,9 +97,13 @@ def send_to_lora():
                     "B": sensor_data.get("sensor_light", {}).get("brightness", 0)
                 }
                 packet = f"<START>{json.dumps(formatted_data, separators=(',', ':'))}<END>\n"
+                packet_size = len(packet.encode('utf-8'))
+                print(f"[LORA] Packet size: {packet_size} bytes")
                 ser.write(packet.encode('utf-8'))
                 ser.flush()
                 print(f"[LORA] Sent packet to Arduino: {packet.strip()}")
+                packets_sent += 1
+                print(f"[LORA] Packets sent: {packets_sent}")
                 ack = ser.readline().decode('utf-8', errors='ignore').strip()
                 print("[LORA] ACK received from Arduino." if ack == "ACK" else f"[LORA] Unexpected response: {ack}")
             except serial.SerialException as e:
