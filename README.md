@@ -372,7 +372,9 @@ Go to your web browser and enter:
 http://127.0.0.1:1880
 ```
 
-On the node-RED interface, you can use nodes and link them together.
+On the node-RED interface, you can use nodes and link accordingly:
+![image](https://github.com/user-attachments/assets/da2b2bcf-a87d-407d-8b69-b774b4489f7f)
+
 
 ------------------------------------------------
 
@@ -402,7 +404,7 @@ In the node setting:
 
 Since we are sending a JSON object, take a JSON node and link it to the MQTT in node
 - To decode the JSON, take a function node and link it on the other side of JSON node
-- Enter this format to retrieve the attributes of each payload:
+- Function 1 for retrieving the attributes of each payload:
 ```
 // Extract the payload
 var payload = msg.payload;
@@ -458,6 +460,31 @@ node.warn("Messages Sent: " + JSON.stringify(messages, null, 2));
 // Return array of messages
 return [messages];
 
+```
+- Function 2 for publishing the MQTT message responsible for changing the actuator threshold
+```
+// Extract slider value from payload
+var sliderValue = msg.payload;
+
+// Log received value for debugging
+node.warn("🔧 Slider Adjusted - Value: " + sliderValue);
+
+// Define MQTT topic for Raspberry Pi
+var mqtt_topic = "raspberrypi/threshold";  // Adjust topic based on your MQTT setup
+
+// Format MQTT message
+var mqtt_message = {
+    topic: mqtt_topic,
+    payload: sliderValue,
+    qos: 0,
+    retain: false
+};
+
+// Log the outgoing MQTT message
+node.warn("📡 Sending to MQTT: " + JSON.stringify(mqtt_message));
+
+// Return the formatted message to MQTT out
+return mqtt_message;
 ```
 
 To debug this, add a debug node to the other side of the function node.
