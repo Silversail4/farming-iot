@@ -54,9 +54,9 @@ dtoverlay=disable-bt
 ```
 **Note:** 'dtoverlay' may have been called before so you may want to comment it out. 
 
-On your Raspberry Pi, type "sudo raspi-config" and
+On your Raspberry Pi, type "sudo raspi-config" and navigate to Interface options
 
-```Disable the shell access over serial (login shell)``` 
+```Select Serial Port then disable login shell over serial``` 
 
 ```enable the serial port hardware```
 
@@ -83,23 +83,7 @@ You should see something like ```/dev/serial0 -> ttyAMA0```
 
 ---------------------------------------------
 ## Step 2: Connecting the wirings from Raspberry Pi to LoRa Device
-From my code, this is my configurations
-Raspberry Pi -> Arduino Uno
-```
-GP14 (TXD) -> d2
-GP15 (RXD) -> d3
-GND -> GND
-```
-In reference to the picture:
-
-GP14 -> d2 will be the purple cable
-
-GP15 -> d3 will be the green cable next to the purple cable
-
-GND -> GND will be the farthest and longest green cable
-
-**Picture Reference:**
-![image](https://github.com/user-attachments/assets/a284df25-5d9d-4b1f-809c-d636d6a7e4c8)
+Connect the LoRa Device to Raspberry PI via USB connection
 
 ---------------------------------------------
 ## Step 3: Testing Serial Connection on Raspberry Pi
@@ -109,7 +93,7 @@ scp [source files] [user]@[host]:[path]
 ```
 e.g.
 ```
-scp serial_pi.py limku@192.168.1.161:./Projects
+scp mqtt-lora-actuator.py limku@192.168.1.161:./Projects
 ```
 **Note:** For me, I needed the '.' before passing to a directory that is connected to my home page, i.e. (home/Projects)
 
@@ -133,15 +117,15 @@ pip install pyserial
 ```
 And run the script in our virtual environment:
 ```
-python serial_pi.py
+python mqtt-lora-actuator.py
 ```
 **Note:** If python serial_pi.py results in an error that says 'Permission Denied', you can try this command<br>for temporary solution. For a permanent solution, refer to the Common Trouble Shooting section:
 ```
-sudo python3 serial_pi.py
+sudo python3 mqtt-lora-actuator.py
 ```
 ------------------------------------------------
 ## Step 4: Testing on LoRa Device
-Download the ```lora_iot_proj.ino``` file and burn it on the Arduino Uno
+Download the ```wislora.ino``` file and burn it on the Arduino Uno
 
 **Note:** Need to connect the Micro-USB cable for LoRa to work 
 
@@ -162,7 +146,7 @@ groups
 ```
 Try running the script again:
 ```
-python3 serial_pi.py
+python3 mqtt-lora-actuator.py
 ```
 
 ------------------------------------------------
@@ -279,7 +263,7 @@ To compile and upload the code:
 
 Then run:
 ```
-python3 serial_pi.py
+python3 mqtt-lora-actuator.py
 ```
 
 You will see the pi is sending messages to the lora device and on the terminal, it will display the messages Lora is sending.
