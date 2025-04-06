@@ -5,7 +5,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 
-#define NODE_ID 2
+#define NODE_ID "M3"
 #define TOPIC "sensor/temperature"
 #define SSID "vqqqq"
 #define pw "qwerty123"

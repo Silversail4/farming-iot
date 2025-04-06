@@ -5,11 +5,11 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 
-#define NODE_ID 4
+#define NODE_ID "M2"
 #define TOPIC "sensor/light"
-#define SSID "vqqqq"
-#define pw "qwerty123"
-#define mqtt_server_ip "192.168.137.253"
+#define SSID "DESKTOP-H7EA0ES 2580"
+#define pw "496P29y)"
+#define mqtt_server_ip "192.168.137.93"
 
 // Wi-Fi and MQTT setup
 const char* ssid = SSID;
