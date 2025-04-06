@@ -13,6 +13,8 @@
 - `\M5-Sensors\` Code for M5StickC Plus devices, which collect and publish sensor data over MQTT.
 - `\Raspberry-pi\` Code for the Raspberry Pi aggregator, responsible for receiving, processing, and storing sensor data.
 - `\lora-wi\` Code for LoRa devices, enabling long-range communication between container units.
+- `\Stress-testing\` Code used to stress test the system
+- `\Security_POC\` Proof of concept for implement encryption in the data being sent from sensor to pi using MQTT
 ---
 # 🟠 M5StickCPlus Sensors Set-Up
 - All code for M5StickCPlus sensor can be found in the `/M5-Sensors/` folder.
